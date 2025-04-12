@@ -1,0 +1,66 @@
+import pandas as pd
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load the 'star_classification' sheet since it seems to contain the relevant data
+df = pd.read_excel("/excel data set.xlsx.xlsx")
+
+# Display the first few rows and column names
+df.head(), df.columns
+# Clean column names
+df.columns = df.columns.str.strip()
+
+# Set seaborn style
+sns.set(style="whitegrid")
+
+# Create subplots
+fig, axes = plt.subplots(3, 2, figsize=(18, 18))
+axes = axes.flatten()
+
+# 1. Bar Chart – Distribution of object classes
+class_counts = df['class'].value_counts()
+sns.barplot(x=class_counts.index, y=class_counts.values, ax=axes[0])
+axes[0].set_title("Distribution of Object Classes")
+axes[0].set_ylabel("Count")
+axes[0].set_xlabel("Class")
+
+# 2. Box Plot – Redshift distribution by object class
+sns.boxplot(x='class', y='redshift', data=df, ax=axes[1])
+axes[1].set_title("Redshift Distribution by Object Class")
+axes[1].set_ylabel("Redshift")
+axes[1].set_xlabel("Class")
+
+# 3. Line Chart – Number of objects per Modified Julian Date
+date_counts = df['Modified Julian Date'].value_counts().sort_index()
+axes[2].plot(date_counts.index, date_counts.values, marker='o')
+axes[2].set_title("Objects Observed per Modified Julian Date")
+axes[2].set_xlabel("Modified Julian Date")
+axes[2].set_ylabel("Number of Observations")
+
+# 4. Scatter Plot – Brightness comparison: g vs r magnitudes
+sns.scatterplot(x='g', y='r', hue='class', data=df, ax=axes[3], alpha=0.6,)
+axes[3].set_title("Brightness Comparison (g vs r)")
+axes[3].set_xlabel("g Magnitude")
+axes[3].set_ylabel("r Magnitude")
+
+# 5. Histogram – Distribution of redshift values
+sns.histplot(df['redshift'], bins=30, kde=True, ax=axes[4], color="skyblue")
+axes[4].set_title("Redshift Distribution")
+axes[4].set_xlabel("Redshift")
+axes[4].set_ylabel("Frequency")
+
+# Hide the empty subplot
+fig.delaxes(axes[5])
+
+plt.tight_layout()
+plt.show()
+# Select relevant numerical features for heatmap and pair plot
+selected_columns = ['u', 'g', 'r', 'i', 'z', 'redshift']
+
+
+
+# 2. Pair plot - Pairwise relationships between selected features colored by class
+sns.pairplot(df[selected_columns + ['class']], hue='class', corner=True)
+plt.suptitle("Pair Plot of Photometric Magnitudes and Redshift by Object Class", y=1.02)
+plt.show()
