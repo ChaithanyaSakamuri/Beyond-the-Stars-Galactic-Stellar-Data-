@@ -1,4 +1,4 @@
-🚀 Step-by-Step Guide to Install Python
+ Step-by-Step Guide to Install Python
 
 Install Python on Your System
 
